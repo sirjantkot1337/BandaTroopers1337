@@ -12,3 +12,4 @@
 #include "game_master/_game_master.dme"
 #include "fullscreen/_fullscreen.dme"
 #include "squads/_squads.dme"
+#include "sun_riders_company/_sun_riders_company.dme"

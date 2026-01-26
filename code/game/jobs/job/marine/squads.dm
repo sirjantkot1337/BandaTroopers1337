@@ -155,6 +155,16 @@
 	faction = FACTION_MARINE
 	lead_icon = "leader"
 
+/datum/squad/marine/squad_sr_1
+	name = SQUAD_SR_PLT_1
+	equipment_color = "#db1d1d" // SS220 EDIT
+	chat_color = "#db1d1d" // SS220 EDIT
+	access = list(ACCESS_MARINE_ALPHA)
+	radio_freq = ALPHA_FREQ
+	minimap_color = MINIMAP_SQUAD_ALPHA
+	use_stripe_overlay = FALSE
+	usable = TRUE
+
 /datum/squad/marine/alpha
 	name = SQUAD_MARINE_1
 	equipment_color = "#db1d1d" // SS220 EDIT
