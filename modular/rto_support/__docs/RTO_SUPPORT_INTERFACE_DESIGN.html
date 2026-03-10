@@ -1,0 +1,139 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><base href="../../../"><link rel="stylesheet" href="dmdoc.css"><title>modular/rto_support/__docs/RTO_SUPPORT_INTERFACE_DESIGN.md - byond</title></head><body><header><a href="index.html">byond</a> - <a href="index.html#modules">Modules</a> - <a href="index.html#types">Types</a></header><main><h1>RTO Support: дизайн интерфейса <aside>modular/rto_support/__docs/RTO_SUPPORT_INTERFACE_DESIGN.md</aside> <a href="https://github.com/sirjantkot1337/BandaTroopers1337/blob/ffce50cb00917c9fe49af45829ebd6ba45190ca4/modular/rto_support/__docs/RTO_SUPPORT_INTERFACE_DESIGN.md"><img src="git.png" width="16" height="16" title="modular/rto_support/__docs/RTO_SUPPORT_INTERFACE_DESIGN.md"></a></h1><table class="summary" cellspacing="0"><tr><td colspan="2"><h2 id="1-главный-ux-принцип">1. Главный UX-принцип</h2>
+<p>Игрок должен без чтения кода понимать три вещи:</p>
+<ol>
+<li>какой режим сейчас выбран;</li>
+<li>почему кнопка доступна или недоступна;</li>
+<li>что произойдёт после <code>Ctrl+Click</code> через бинокль.</li>
+</ol>
+<h2 id="2-когда-видны-rto-кнопки">2. Когда видны RTO-кнопки</h2>
+<p>RTO HUD показывается только если:</p>
+<ul>
+<li>у владельца есть <code>RTO binoculars</code> в левой или правой руке;</li>
+<li>владелец жив;</li>
+<li>владелец является <code>JOB_SQUAD_RTO</code>.</li>
+</ul>
+<p>Если бинокль убран:</p>
+<ul>
+<li>кнопки не сереют;</li>
+<li>кнопки именно скрываются.</li>
+</ul>
+<p>Это касается и <code>Выбрать пакет поддержки</code>, и utility-режимов, и support abilities.</p>
+<h2 id="3-preset-selection">3. Preset selection</h2>
+<p>Меню выбора пакета остаётся отдельным TGUI.</p>
+<p>Кнопка входа:</p>
+<ul>
+<li><code>Выбрать пакет поддержки</code></li>
+</ul>
+<p>Кнопка видна только пока:</p>
+<ul>
+<li>пакет ещё не выбран;</li>
+<li>бинокль в руке.</li>
+</ul>
+<p>В карточке пресета должны читаться:</p>
+<ul>
+<li>роль пресета;</li>
+<li>нужен ли сектор;</li>
+<li>радиус, длительность и recovery сектора;</li>
+<li>список способностей;</li>
+<li>общие и личные cooldown'ы;</li>
+<li>ограничения по открытому небу и целевому тайлу.</li>
+</ul>
+<p><code>Logistics</code> в UI явно помечается как пакет без сектора.</p>
+<h2 id="4-action-states">4. Action states</h2>
+<p>Используются короткие и стабильные статусы:</p>
+<ul>
+<li><code>Готово</code></li>
+<li><code>Наведение</code></li>
+<li><code>Активна</code></li>
+<li><code>Нужен бинокль</code></li>
+<li><code>Нет сектора</code></li>
+<li><code>Общий КД: Ns</code></li>
+<li><code>Личный КД: Ns</code></li>
+</ul>
+<h2 id="5-visibility-action">5. Visibility action</h2>
+<p>Кнопка сектора показывает только состояние самого сектора:</p>
+<ul>
+<li><code>Наведение</code></li>
+<li><code>Активна: Ns</code></li>
+<li><code>CD: Ns</code></li>
+<li><code>Готово</code></li>
+</ul>
+<p>Она не должна:</p>
+<ul>
+<li>показывать общий cooldown support-пакета;</li>
+<li>выглядеть так, будто делит cooldown с support ability.</li>
+</ul>
+<h2 id="6-support-abilities">6. Support abilities</h2><h3 id="zone-based-templates">Zone-based templates</h3>
+<p>Для <code>Mortar</code>, <code>CAS</code>, <code>Heavy Strike</code> support button ведёт себя так:</p>
+<ol>
+<li>если сектора нет или он не активен:
+primary label <code>Нет сектора</code></li>
+<li>если сектор активен и у абилки есть cooldown:
+primary label показывает только таймер самой абилки</li>
+<li>если сектор активен и cooldown нет:
+primary label <code>Готово</code></li>
+</ol>
+<p>Shared и personal cooldown'ы не рисуются как secondary labels.</p>
+<p>Если одновременно активны local и shared cooldown:</p>
+<ul>
+<li>на кнопке показывается больший из двух;</li>
+<li>при равенстве приоритет отдаётся local cooldown.</li>
+</ul>
+<h3 id="logistics">Logistics</h3>
+<p>Для <code>Logistics</code> zone labels запрещены полностью.</p>
+<p>Primary label:</p>
+<ul>
+<li>больший из <code>Общий КД: Ns</code> и <code>Личный КД: Ns</code>, если активны оба;</li>
+<li>иначе <code>Личный КД: Ns</code>, если активен personal cooldown;</li>
+<li>иначе <code>Общий КД: Ns</code>, если активен shared cooldown;</li>
+<li>иначе <code>Готово</code>.</li>
+</ul>
+<h2 id="7-utility-modes">7. Utility modes</h2><h3 id=""><code>Координаты</code></h3>
+<ul>
+<li>persistent mode;</li>
+<li>без cooldown;</li>
+<li>после клика остаётся включённым;</li>
+<li>в интерфейсе показывает только:
+<ul>
+<li><code>Наведение</code>, если режим активен;</li>
+<li><code>Готово</code>, если режим не активен.</li>
+</ul>
+</li>
+</ul>
+<p>Лазерная точка для этого режима не рисуется.</p>
+<h3 id=""><code>Лазерная отметка</code></h3>
+<ul>
+<li>persistent mode;</li>
+<li>без cooldown;</li>
+<li>после клика остаётся включённым;</li>
+<li>подсветка живёт, пока сохраняется реальное ведение цели через бинокль.</li>
+</ul>
+<p>Интерфейс показывает режим как <code>Наведение</code>, пока marker mode активен.</p>
+<h2 id="8-binocular-ux">8. Binocular UX</h2>
+<p>Бинокль является финальной точкой interaction flow:</p>
+<ul>
+<li>action-кнопка выбирает режим;</li>
+<li>бинокль принимает цель через <code>Ctrl+Click</code> во время зума;</li>
+<li><code>Ctrl+Click</code> по самому биноклю снимает текущий режим.</li>
+</ul>
+<p>Examine у бинокля должен объяснять:</p>
+<ul>
+<li>выбранный пакет;</li>
+<li>состояние сектора;</li>
+<li>текущий armed mode;</li>
+<li>активна ли ручная лазерная отметка;</li>
+<li>что utility-режимы не имеют cooldown.</li>
+</ul>
+<h2 id="9-paired-sling-pouch-ux">9. Paired sling pouch UX</h2>
+<p>Игрок получает не loose binocular, а комплект:</p>
+<ul>
+<li><code>RTO sling pouch</code></li>
+<li>paired <code>RTO binoculars</code></li>
+</ul>
+<p>Практический UX:</p>
+<ul>
+<li>pouch не отпускает бинокль через обычный <code>attack_self</code>;</li>
+<li>если pouch сбрасывается, paired binocular старается вернуться обратно;</li>
+<li>если бинокль уронен, sling retrieval тянет его в pouch.</li>
+</ul>
+<p>Это должно ощущаться как специализированная страховка бинокля, а не как обычный generic sling.</p></td></tr></table></main><footer>colonialmarines.dme <a href="https://github.com/sirjantkot1337/BandaTroopers1337/tree/ffce50cb00917c9fe49af45829ebd6ba45190ca4">ffce50c</a> (master) — <a href="https://github.com/SpaceManiac/SpacemanDMM/blob/master/crates/dmdoc/README.md">dmdoc 1.11.0</a></footer></body></html>

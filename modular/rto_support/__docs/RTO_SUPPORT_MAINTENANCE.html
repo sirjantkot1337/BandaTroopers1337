@@ -1,0 +1,91 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><base href="../../../"><link rel="stylesheet" href="dmdoc.css"><title>modular/rto_support/__docs/RTO_SUPPORT_MAINTENANCE.md - byond</title></head><body><header><a href="index.html">byond</a> - <a href="index.html#modules">Modules</a> - <a href="index.html#types">Types</a></header><main><h1>RTO Support: сопровождение <aside>modular/rto_support/__docs/RTO_SUPPORT_MAINTENANCE.md</aside> <a href="https://github.com/sirjantkot1337/BandaTroopers1337/blob/ffce50cb00917c9fe49af45829ebd6ba45190ca4/modular/rto_support/__docs/RTO_SUPPORT_MAINTENANCE.md"><img src="git.png" width="16" height="16" title="modular/rto_support/__docs/RTO_SUPPORT_MAINTENANCE.md"></a></h1><table class="summary" cellspacing="0"><tr><td colspan="2"><h2 id="1-что-важно-не-сломать">1. Что важно не сломать</h2>
+<p>При любых изменениях сохранять следующие инварианты:</p>
+<ul>
+<li>RTO HUD остаётся <code>human_action</code>-based;</li>
+<li>controller владеет lifecycle action'ов;</li>
+<li>actions скрываются, если бинокль не в руке;</li>
+<li><code>Координаты</code> и <code>Лазерная отметка</code> не получают cooldown;</li>
+<li><code>Координаты</code> не рисуют лазер;</li>
+<li><code>Лазерная отметка</code> остаётся live binocular laser, а не timed world marker;</li>
+<li><code>visibility_zone_cooldown</code> и <code>shared support cooldown</code> не смешиваются в один UI-state;</li>
+<li><code>RTO sling pouch</code> остаётся жёстко спаренным с одним биноклем.</li>
+</ul>
+<h2 id="2-ключевые-файлы">2. Ключевые файлы</h2>
+<p>Runtime:</p>
+<ul>
+<li><code>modular/rto_support/code/controller/controller.dm</code></li>
+<li><code>modular/rto_support/code/services/validation_service.dm</code></li>
+<li><code>modular/rto_support/code/services/dispatch_service.dm</code></li>
+</ul>
+<p>Интерфейс:</p>
+<ul>
+<li><code>modular/rto_support/code/actions/rto_actions.dm</code></li>
+<li><code>modular/rto_support/code/items/rto_binoculars.dm</code></li>
+<li><code>modular/rto_support/code/ui/preset_menu.dm</code></li>
+</ul>
+<p>Выдача комплекта:</p>
+<ul>
+<li><code>modular/rto_support/code/items/rto_sling_pouch.dm</code></li>
+<li><code>modular/rto_support/code/job/rto_integration.dm</code></li>
+</ul>
+<h2 id="3-как-безопасно-менять-hud">3. Как безопасно менять HUD</h2>
+<p>Если меняешь action-кнопки:</p>
+<ul>
+<li>не переводи их на <code>item_action</code> без отдельного архитектурного решения;</li>
+<li>не удаляй и не пересоздавай их на каждый hand swap;</li>
+<li>используй <code>hide_from()</code> / <code>unhide_from()</code>;</li>
+<li>не вычисляй cooldown UI вручную в action datum, если это уже делает controller state builder.</li>
+</ul>
+<h2 id="4-как-безопасно-менять-utility-режимы">4. Как безопасно менять utility-режимы</h2>
+<p>Если меняется <code>Координаты</code> или <code>Лазерная отметка</code>:</p>
+<ul>
+<li>логика режима остаётся в controller;</li>
+<li>предмет отвечает только за реальное поведение бинокля и live overlay;</li>
+<li>utility-режимы не должны уходить в cooldown;</li>
+<li>отключение режима обязано снимать live marker без оставшегося мусора.</li>
+</ul>
+<h2 id="5-как-безопасно-менять-sling-pouch">5. Как безопасно менять sling pouch</h2>
+<p><code>RTO sling pouch</code> — это не generic storage pouch.</p>
+<p>Не ломать:</p>
+<ul>
+<li>привязку <code>paired_pouch &lt;-&gt; paired_binocular</code>;</li>
+<li>запрет на чужие предметы;</li>
+<li>запрет на ручной unsling;</li>
+<li>возврат бинокля в pouch при drop flow.</li>
+</ul>
+<p>Если меняется <code>drop_retrieval</code> или storage API, первым делом перепроверять именно этот комплект.</p>
+<h2 id="6-как-безопасно-менять-cooldown-ui">6. Как безопасно менять cooldown UI</h2>
+<p>Support button должен разделять:</p>
+<ul>
+<li>состояние сектора;</li>
+<li>общий cooldown пакета;</li>
+<li>личный cooldown способности.</li>
+</ul>
+<p>Не допускается возвращать старое поведение, где:</p>
+<ul>
+<li>секторный recovery выглядит как общий cooldown способности;</li>
+<li>visibility action показывает cooldown support ability.</li>
+</ul>
+<p>Если меняется UI-модель, менять сначала controller state builder, а не размазывать условия по action-классам.</p>
+<h2 id="7-checklist-после-правок">7. Checklist после правок</h2>
+<ol>
+<li>Взять бинокль в руку: кнопки появились.</li>
+<li>Убрать бинокль из рук: кнопки скрылись.</li>
+<li><code>Координаты</code> не создают лазер и не выключаются после одного клика.</li>
+<li><code>Лазерная отметка</code> не имеет cooldown и держит живой laser overlay.</li>
+<li><code>Logistics</code> не показывает кнопку сектора.</li>
+<li>Visibility action не показывает shared cooldown поддержки.</li>
+<li>Zone-based support actions показывают сектор и cooldown'ы раздельно.</li>
+<li>Locker и equipped RTO получают <code>pouch + binocular</code>, а не loose binocular.</li>
+<li>Старый tactical binocular не вернулся в locker flow.</li>
+</ol>
+<h2 id="8-проверки-сборки">8. Проверки сборки</h2>
+<p>Минимум:</p>
+<ol>
+<li><code>tools\build\build.bat dm</code></li>
+</ol>
+<p>Если были правки фронтенда:</p>
+<ol start="2">
+<li><code>tools\build\build.bat tgui-eslint</code></li>
+<li><code>tools\build\build.bat tgui</code></li>
+</ol></td></tr></table></main><footer>colonialmarines.dme <a href="https://github.com/sirjantkot1337/BandaTroopers1337/tree/ffce50cb00917c9fe49af45829ebd6ba45190ca4">ffce50c</a> (master) — <a href="https://github.com/SpaceManiac/SpacemanDMM/blob/master/crates/dmdoc/README.md">dmdoc 1.11.0</a></footer></body></html>
