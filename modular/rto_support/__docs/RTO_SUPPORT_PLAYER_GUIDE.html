@@ -1,0 +1,88 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><base href="../../../"><link rel="stylesheet" href="dmdoc.css"><title>modular/rto_support/__docs/RTO_SUPPORT_PLAYER_GUIDE.md - byond</title></head><body><header><a href="index.html">byond</a> - <a href="index.html#modules">Modules</a> - <a href="index.html#types">Types</a></header><main><h1>RTO Support: памятка игроку <aside>modular/rto_support/__docs/RTO_SUPPORT_PLAYER_GUIDE.md</aside> <a href="https://github.com/sirjantkot1337/BandaTroopers1337/blob/14fdd6639cb7785e8ec823430b923a57057be21b/modular/rto_support/__docs/RTO_SUPPORT_PLAYER_GUIDE.md"><img src="git.png" width="16" height="16" title="modular/rto_support/__docs/RTO_SUPPORT_PLAYER_GUIDE.md"></a></h1><table class="summary" cellspacing="0"><tr><td colspan="2"><h2 id="1-что-у-тебя-есть">1. Что у тебя есть</h2>
+<p>RTO получает:</p>
+<ul>
+<li><code>RTO binoculars</code></li>
+<li><code>RTO sling pouch</code> с жёсткой связкой к этим биноклям</li>
+</ul>
+<p>Кнопки RTO видны только пока бинокль у тебя в руке.</p>
+<h2 id="2-базовый-цикл-для-боевых-пакетов">2. Базовый цикл для боевых пакетов</h2>
+<p>Для <code>Mortar</code>, <code>CAS</code>, <code>Heavy Strike</code> играй так:</p>
+<ol>
+<li>достань RTO-бинокль в руку;</li>
+<li>нажми <code>Выбрать пакет поддержки</code>;</li>
+<li>выбери пакет;</li>
+<li>нажми кнопку сектора наведения;</li>
+<li>во время зума через бинокль поставь сектор <code>Ctrl+Click</code>;</li>
+<li>нажми нужную поддержку;</li>
+<li>снова через бинокль наведи точку <code>Ctrl+Click</code>.</li>
+</ol>
+<p>Коротко:</p>
+<p><code>взял бинокль -&gt; выбрал пакет -&gt; развернул сектор -&gt; выбрал абилку -&gt; навёл через бинокль</code></p>
+<p>Важно:</p>
+<ul>
+<li><code>Mortar</code> теперь работает через длинное окно сектора примерно на <code>100 секунд</code>, после чего уходит в тяжёлую recovery-фазу примерно на <code>300 секунд</code>;</li>
+<li><code>CAS</code> теперь держит темп ожидания примерно <code>10-20 секунд</code> между ударами;</li>
+<li><code>Heavy Strike</code> тоже сведён к ожиданию примерно <code>10-20 секунд</code> между ударами, но всё ещё остаётся самым тяжёлым боевым пакетом по recovery зоны;</li>
+<li>у <code>Mortar</code> интервалы между выстрелами ещё меньше.</li>
+</ul>
+<h2 id="3-logistics">3. Logistics</h2>
+<p><code>Logistics</code> работает без сектора.</p>
+<p>Порядок:</p>
+<ol>
+<li>возьми бинокль в руку;</li>
+<li>выбери <code>Logistics</code>;</li>
+<li>нажми нужный сброс;</li>
+<li>наведи точку через бинокль <code>Ctrl+Click</code>.</li>
+</ol>
+<p>У <code>Logistics</code> сейчас есть:</p>
+<ul>
+<li><code>Supply drop</code></li>
+<li><code>Mine crate drop</code></li>
+<li><code>Mini-sentry drop</code></li>
+<li><code>Full sentry drop</code></li>
+</ul>
+<p>Важно:</p>
+<ul>
+<li><code>Logistics</code> — самый долгий пакет по кулдаунам;</li>
+<li>это отложенная поддержка для снабжения и удержания позиции, а не для быстрого спама.</li>
+</ul>
+<h2 id="4-utility-режимы">4. Utility-режимы</h2><h3 id=""><code>Координаты</code></h3>
+<ul>
+<li>это не абилка с cooldown;</li>
+<li>это постоянный режим;</li>
+<li><code>Ctrl+Click</code> просто пишет координаты точки;</li>
+<li>лазерной точки у этого режима нет.</li>
+</ul>
+<h3 id=""><code>Лазерная отметка</code></h3>
+<ul>
+<li>это тоже постоянный режим без cooldown;</li>
+<li><code>Ctrl+Click</code> ставит или переносит живую подсветку;</li>
+<li>лазер держится только пока ты реально продолжаешь вести цель через бинокль.</li>
+</ul>
+<h2 id="5-как-читать-кнопки">5. Как читать кнопки</h2><h3 id="кнопка-сектора">Кнопка сектора</h3>
+<ul>
+<li><code>Готово</code> — сектор можно развернуть</li>
+<li><code>Наведение</code> — ждёт <code>Ctrl+Click</code></li>
+<li><code>Активна: Ns</code> — сектор уже работает</li>
+<li><code>CD: Ns</code> — сектор перезаряжается</li>
+</ul>
+<h3 id="support-abilities-у-боевых-пакетов">Support abilities у боевых пакетов</h3>
+<ul>
+<li><code>Нет сектора</code> — сектор нужен, но не выставлен</li>
+<li><code>Личный КД: Ns</code> — cooldown именно этой кнопки</li>
+<li><code>Общий КД: Ns</code> — общий cooldown пакета поддержки</li>
+</ul>
+<p>Важно:</p>
+<ul>
+<li>таймер сектора живёт только на кнопке сектора;</li>
+<li>если у ability одновременно активны локальный и общий cooldown, на кнопке показывается больший из двух.</li>
+</ul>
+<h3 id="support-abilities-у-logistics">Support abilities у Logistics</h3>
+<p>У логистики нет статусов сектора.</p>
+<p>Ты видишь только:</p>
+<ul>
+<li>больший из <code>Личный КД: Ns</code> и <code>Общий КД: Ns</code>, если активны оба</li>
+<li><code>Личный КД: Ns</code>, если активен только локальный cooldown</li>
+<li><code>Общий КД: Ns</code>, если активен только общий cooldown</li>
+<li><code>Готово</code></li>
+</ul></td></tr></table></main><footer>colonialmarines.dme <a href="https://github.com/sirjantkot1337/BandaTroopers1337/tree/14fdd6639cb7785e8ec823430b923a57057be21b">14fdd66</a> (master) — <a href="https://github.com/SpaceManiac/SpacemanDMM/blob/master/crates/dmdoc/README.md">dmdoc 1.11.0</a></footer></body></html>

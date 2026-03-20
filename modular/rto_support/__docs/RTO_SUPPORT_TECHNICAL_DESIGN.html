@@ -1,0 +1,95 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><base href="../../../"><link rel="stylesheet" href="dmdoc.css"><title>modular/rto_support/__docs/RTO_SUPPORT_TECHNICAL_DESIGN.md - byond</title></head><body><header><a href="index.html">byond</a> - <a href="index.html#modules">Modules</a> - <a href="index.html#types">Types</a></header><main><h1>RTO Support: технический дизайн <aside>modular/rto_support/__docs/RTO_SUPPORT_TECHNICAL_DESIGN.md</aside> <a href="https://github.com/sirjantkot1337/BandaTroopers1337/blob/14fdd6639cb7785e8ec823430b923a57057be21b/modular/rto_support/__docs/RTO_SUPPORT_TECHNICAL_DESIGN.md"><img src="git.png" width="16" height="16" title="modular/rto_support/__docs/RTO_SUPPORT_TECHNICAL_DESIGN.md"></a></h1><table class="summary" cellspacing="0"><tr><td colspan="2"><h2 id="1-назначение">1. Назначение</h2>
+<p><code>RTO Support</code> реализует персональную систему вызова поддержки для роли <code>RTO</code> без привязки к singleton-runtime существующего <code>fire_support</code>.</p>
+<p>Модуль держит:</p>
+<ul>
+<li>персональный controller на конкретного RTO;</li>
+<li>конфигурационные шаблоны поддержки;</li>
+<li>серверную валидацию;</li>
+<li>dispatch в свежие <code>datum/fire_support</code>;</li>
+<li>action-кнопки и таргетинг через отдельный RTO-бинокль.</li>
+</ul>
+<h2 id="2-главная-архитектура">2. Главная архитектура</h2>
+<p>Система разбита на четыре слоя:</p>
+<ol>
+<li><code>config</code>
+<code>rto_support_template</code> и <code>rto_support_action_template</code></li>
+<li><code>runtime</code>
+<code>rto_support_controller</code>, <code>rto_visibility_zone</code></li>
+<li><code>services</code>
+<code>rto_support_validation_service</code>, <code>rto_support_dispatch_service</code></li>
+<li><code>interaction</code>
+<code>human_action</code>-кнопки, <code>RTO binoculars</code>, preset menu</li>
+</ol>
+<h2 id="3-controller-и-runtime-контракты">3. Controller и runtime-контракты</h2>
+<p>Controller хранит:</p>
+<ul>
+<li>владельца;</li>
+<li>активный template;</li>
+<li>активный visibility zone;</li>
+<li>armed mode;</li>
+<li>общий cooldown пакета;</li>
+<li>личные cooldown способностей;</li>
+<li>ссылки на RTO action-кнопки.</li>
+</ul>
+<p>Controller не должен содержать special-case branching под конкретные типы mortar, CAS или heavy. Все различия живут в конфигурации и <code>fire_support_path</code>.</p>
+<h2 id="4-rto-single-shot-mortar">4. RTO single-shot mortar</h2>
+<p>RTO не использует апстримовые многоснарядные mortar datums напрямую.</p>
+<p>Модуль объявляет собственные подтипы:</p>
+<ul>
+<li><code>/datum/fire_support/mortar/rto_single</code></li>
+<li><code>/datum/fire_support/mortar/smoke/rto_single</code></li>
+<li><code>/datum/fire_support/mortar/incendiary/rto_single</code></li>
+</ul>
+<p>Их ответственность:</p>
+<ul>
+<li>сохранить базовое поведение апстримового mortar-типа;</li>
+<li>переопределить <code>impact_quantity = 1</code>;</li>
+<li>заменить announce-сообщения с barrage wording на single-round wording.</li>
+</ul>
+<p>Почему так:</p>
+<ul>
+<li>апстримовый mortar остаётся неизменным для остальных систем;</li>
+<li>RTO получает отдельную продуктовую семантику;</li>
+<li>controller и dispatch не получают новую условную логику.</li>
+</ul>
+<p>Action templates <code>mortar_*</code> должны ссылаться именно на эти module-local fire-support пути.</p>
+<h2 id="5-zone-и-cooldown-model">5. Zone и cooldown model</h2>
+<p>Runtime-модель кулдаунов остаётся data-driven:</p>
+<ul>
+<li><code>visibility_zone_cooldown_until</code></li>
+<li><code>shared_cooldown_until</code></li>
+<li><code>action_cooldowns[action_id]</code></li>
+</ul>
+<p>Текущие zone timings:</p>
+<ul>
+<li><code>Mortar</code>: <code>100s active / 300s recovery</code></li>
+<li><code>CAS</code>: <code>200s active / 500s recovery</code></li>
+<li><code>Heavy Strike</code>: <code>300s active / 800s recovery</code></li>
+<li><code>Logistics</code>: zones unsupported</li>
+</ul>
+<p>Recovery зоны стартует после завершения или очистки зоны, а не в момент deploy.</p>
+<h2 id="6-баланс-как-данные-а-не-runtime-логика">6. Баланс как данные, а не runtime-логика</h2>
+<p>Новый баланс остаётся полностью config-driven:</p>
+<ul>
+<li><code>Mortar</code> — короткий burst-window пакет;</li>
+<li><code>CAS</code> — средний пакет без экстремумов;</li>
+<li><code>Heavy Strike</code> — длинное, но контролируемое дорогое окно;</li>
+<li><code>Logistics</code> — no-zone пакет с самыми длинными ability cooldowns.</li>
+</ul>
+<p>Текущий целевой боевой tempo:</p>
+<ul>
+<li><code>Mortar</code> — меньше <code>10 секунд</code> между повторными ударами;</li>
+<li><code>CAS</code> — в среднем <code>10-20 секунд</code> между ударами;</li>
+<li><code>Heavy Strike</code> — тоже в среднем <code>10-20 секунд</code>, но с самым долгим recovery сектора;</li>
+<li><code>Logistics</code> не участвует в этом правиле и остаётся отдельной долгой экономикой.</li>
+</ul>
+<p>Никаких новых веток вида <code>if(template_id == &quot;mortar&quot;)</code> или <code>if(template_id == &quot;heavy&quot;)</code> для этого ребаланса не добавляется.</p>
+<h2 id="7-что-не-менять-без-причины">7. Что не менять без причины</h2>
+<ul>
+<li>не переносить RTO HUD на <code>item_action</code>;</li>
+<li>не возвращать timed coordinate marker;</li>
+<li>не возвращать timed manual designation как ground marker;</li>
+<li>не смешивать zone cooldown и support cooldown в одном primary label;</li>
+<li>не возвращать RTO mortar к <code>impact_quantity &gt; 1</code>;</li>
+<li>не выносить runtime-логику из <code>modular/rto_support</code> в апстрим без жёсткой необходимости.</li>
+</ul></td></tr></table></main><footer>colonialmarines.dme <a href="https://github.com/sirjantkot1337/BandaTroopers1337/tree/14fdd6639cb7785e8ec823430b923a57057be21b">14fdd66</a> (master) — <a href="https://github.com/SpaceManiac/SpacemanDMM/blob/master/crates/dmdoc/README.md">dmdoc 1.11.0</a></footer></body></html>

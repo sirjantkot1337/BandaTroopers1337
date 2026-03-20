@@ -1,0 +1,63 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><base href="../../../"><link rel="stylesheet" href="dmdoc.css"><title>modular/halo/__docs/HALO_PORT_STATE.md - byond</title></head><body><header><a href="index.html">byond</a> - <a href="index.html#modules">Modules</a> - <a href="index.html#types">Types</a></header><main><h1>HALO PORT STATE <aside>modular/halo/__docs/HALO_PORT_STATE.md</aside> <a href="https://github.com/sirjantkot1337/BandaTroopers1337/blob/14fdd6639cb7785e8ec823430b923a57057be21b/modular/halo/__docs/HALO_PORT_STATE.md"><img src="git.png" width="16" height="16" title="modular/halo/__docs/HALO_PORT_STATE.md"></a></h1><table class="summary" cellspacing="0"><tr><td colspan="2"><p>Canonical source of truth for the current HALO upstream baseline. For HALO port, sync, or update tasks, read this document before planning or editing. <code>HALO_PORT_BACKLOG.md</code> stays secondary and must not redefine the baseline here.</p>
+<h2 id="source-baseline">Source Baseline</h2>
+<ul>
+<li>Source repository: <code>https://github.com/cmss13-devs/cmss13-pve-halo</code></li>
+<li>Previous pinned upstream commit: <code>7e498b805686ab870ddcfaa3cdf348103c0e3f51</code> (2026-03-05)</li>
+<li>Current pinned upstream commit: <code>95a84ab9f59f9118e5543f664b2793e7a1841c55</code> (2026-03-11)</li>
+<li>Current port wave: <code>CORE + SQUADS-owned ship runtime + weapons/assets + ODST drop pod sync</code></li>
+</ul>
+<h2 id="scope-summary">Scope Summary</h2>
+<ul>
+<li>HALO content ownership stays split by module boundary:</li>
+<li><code>modular/halo/**</code> owns HALO content, gear, weapons, assets, AI, drop pods, and map-specific runtime support.</li>
+<li><code>modular/squads/**</code> owns active HALO platoon families, squad/job datums, locker routing, and ship-role profile helpers.</li>
+<li>This sync ports the upstream wave for MA5B and M6D support, SPNKr, covenant melee, elite shield and temporary visual content, ODST drop pods, and the related HALO map updates.</li>
+<li>Active HALO ship maps still use HALO platoon families through ship JSON <code>platoon</code> defaults plus optional <code>allowed_platoons</code> overrides; legacy single-squad ODST runtime paths remain invalid.</li>
+</ul>
+<h2 id="bandatroopers-sync-anchor">BandaTroopers Sync Anchor</h2>
+<ul>
+<li>Current local workspace head while applying this sync: <code>7d8b26d9a555a5a846a401b9c37a254a0d23cfb0</code></li>
+<li>Previous HALO upstream pin for local work: <code>7e498b805686ab870ddcfaa3cdf348103c0e3f51</code></li>
+</ul>
+<h2 id="intentional-source-deviations">Intentional Source Deviations</h2>
+<ul>
+<li>HALO squad and platoon runtime is not returned to upstream <code>code/game/jobs/**</code>; it stays in <code>modular/squads/**</code>.</li>
+<li>HALO shared string contracts stay in <code>code/__DEFINES/halo_jobs.dm</code>.</li>
+<li>Upstream legacy ODST map landmarks and single-squad ODST typepaths are not restored. HALO maps must target current <code>modular/squads</code> runtime and existing marine <code>alpha/bravo/charlie/delta</code> landmark surfaces.</li>
+<li>HALO ship JSON stays on <code>/datum/squad/marine/halo/{unsc,odst}/alpha</code> plus optional <code>allowed_platoons</code>, even though upstream <code>unsc_dark_was_the_night*.json</code> reverted to old non-HALO squad paths.</li>
+<li>ODST drop pod transit support uses the modular compat layer in <code>modular/halo/code/mixed/compat/halo_droppod_support.dm</code> instead of scattering direct upstream changes across the non-modular tree.</li>
+<li>Drop pod reservation cleanup keeps the local fix that requests <code>/datum/turf_reservation/transit/drop_pod</code> and releases the reservation after landing.</li>
+</ul>
+<h2 id="compatibility-hotspots">Compatibility Hotspots</h2>
+<ul>
+<li>Recheck <code>modular/halo/code/mixed/compat/**</code> on every upstream sync, especially <code>halo_core_*</code> and <code>halo_droppod_support.dm</code>.</li>
+<li>Recheck HALO map-support content in <code>modular/halo/code/mixed/{ammo_boxes,structures,effects}/</code> and <code>modular/halo/code/modules/{halo_drop_pod,admin,projectiles}/</code>.</li>
+<li>Recheck the small HALO glue surface in <code>code/**</code>: <code>code/game/sound.dm</code>, <code>code/modules/admin/{admin_verbs,topic/topic}.dm</code>, and <code>code/modules/mob/living/living_verbs.dm</code>.</li>
+<li>Recheck HALO ship/runtime ownership surfaces in <code>modular/squads/code/job/{halo_modular_platoons,ship_platoon_profiles}.dm</code> and HALO locker files in <code>modular/squads/code/closets/</code>.</li>
+<li>Recheck HALO ship JSON and map files together: <code>maps/{unsc_stalwart_frigate,unsc_dark_was_the_night,unsc_dark_was_the_night_odst}.json</code> and the three HALO ship DMMs.</li>
+<li>Recheck <code>tgui/packages/tgui/interfaces/GameMasterDroppodMenu.jsx</code> on future upstream UI syncs.</li>
+</ul>
+<h2 id="runtime-toggle">Runtime Toggle</h2>
+<ul>
+<li><code>HALO_PERF_DEBUG</code> is a runtime config flag for temporary HALO combat profiling.</li>
+<li>Config surface: add <code>HALO_PERF_DEBUG</code> to <code>config/config.txt</code> or uncomment it in the example config template.</li>
+<li>Default state: off.</li>
+<li>Effect when enabled: exposes HALO-specific counters in MC stat output for projectile FX, human AI cover/path churn, and active shield harness processing.</li>
+<li>Production guidance: leave it off in normal production. Enable only for local repros or short diagnostic sessions around HALO AI-vs-AI battle stalls.</li>
+</ul>
+<h2 id="last-validation-snapshot">Last Validation Snapshot</h2>
+<ul>
+<li>Validation date: 2026-03-12</li>
+<li>Clean verification tree: <code>C:\Users\Alexey\Documents\GitHub\_tmp_bt_halo_buildcheck2</code></li>
+<li><code>tools/build/build dm --ci -DCIBUILDING -DANSICOLORS -Werror</code>: passed.</li>
+<li><code>tools/build/build dm --ci -DCIBUILDING -DCITESTING -DALL_MAPS -DALL_MAPS_STAGE_BASE</code>: passed.</li>
+<li><code>tools/build/build dm --ci -DCIBUILDING -DCITESTING -DALL_MAPS -DALL_MAPS_STAGE_EXTRA</code>: passed.</li>
+<li><code>tools/build/build dm-test --ci -DCIBUILDING -DANSICOLORS -Werror</code>: wrapper still returned non-zero on Windows, but <code>data/unit_tests.json</code> reported all tests green and <code>data/logs/ci/clean_run.lk</code> contained <code>Success!</code>.</li>
+<li>maplint passed for <code>maps/map_files/UNSC_Stalwart_Frigate/UNSC_Stalwart_Frigate.dmm</code>, <code>maps/map_files/unsc_dark_was_the_night/unsc_dark_was_the_night.dmm</code>, and <code>maps/map_files/unsc_dark_was_the_night_odst/unsc_dark_was_the_night_odst.dmm</code>.</li>
+</ul>
+<h2 id="update-protocol">Update Protocol</h2>
+<ul>
+<li>Any future HALO upstream baseline change must update this file in the same change.</li>
+<li>If a HALO sync introduces a new intentional deviation, compatibility hotspot, or accepted tooling caveat, record it here immediately.</li>
+<li>If this file and <code>HALO_PORT_BACKLOG.md</code> diverge, this file wins.</li>
+</ul></td></tr></table></main><footer>colonialmarines.dme <a href="https://github.com/sirjantkot1337/BandaTroopers1337/tree/14fdd6639cb7785e8ec823430b923a57057be21b">14fdd66</a> (master) — <a href="https://github.com/SpaceManiac/SpacemanDMM/blob/master/crates/dmdoc/README.md">dmdoc 1.11.0</a></footer></body></html>
