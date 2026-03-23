@@ -1417,3 +1417,20 @@
   - soundadd: fire support sounds
   - imageadd: fire support radials
   - imageadd: dropship shadows for krokodil and ud
+2026-03-23:
+  PhantornRU:
+  - rscadd: modular HALO RTO supply support with logistics, medical and technical
+      packages
+  - rscadd: HALO GM fire support custom sections and payload bridge
+  - rscadd: USCM logistics, medical and technical support drops for RTO
+  - rscadd: two-slot RTO package selection with full reset timer
+  - rscadd: package-specific shared cooldowns and per-template zone ownership logic
+  - rscadd: distinct UNSC and ODST combat support availability
+  - rscadd: solo combat-package bonus that halves visibility-sector cooldown
+  - rscadd: Game Rule Panel now has a Player Survival tab for Save Before Death and
+      Anti-Gib runtime rules
+  - qol: admins can now tune crit grace duration and anti-gib limb loss chance during
+      the round
+  - bugfix: HALO and USCM RTO presets/lockers now wire into the modular support controller
+      correctly
+  - bugfix: base USCM RTO keeps the spotter trait alongside the new support integration
