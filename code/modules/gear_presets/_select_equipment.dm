@@ -690,6 +690,20 @@ GLOBAL_LIST_EMPTY(personal_closets)
 			uniform.roll_suit_sleeves(new_human)
 	new_human.equip_to_slot_or_del(uniform, WEAR_BODY)
 
+/datum/equipment_preset/proc/add_rebel_clf_uniform(mob/living/carbon/human/new_human)
+	if(!istype(new_human))
+		return
+	var/uniformpath = pick(
+		/obj/item/clothing/under/colonist/boilersuit/darkblue,
+		/obj/item/clothing/under/colonist/boilersuit/cyan,
+		/obj/item/clothing/under/colonist/boilersuit/khaki,
+		/obj/item/clothing/under/colonist/boilersuit/grey,
+		/obj/item/clothing/under/colonist/boilersuit/white,
+		/obj/item/clothing/under/colonist/clf,
+		/obj/item/clothing/under/colonist/clf,
+		)
+	var/obj/item/clothing/under/uniform = new uniformpath
+	new_human.equip_to_slot_or_del(uniform, WEAR_BODY)
 
 /datum/equipment_preset/proc/add_rebel_ua_suit(mob/living/carbon/human/new_human)
 	if(!istype(new_human))
@@ -718,6 +732,22 @@ GLOBAL_LIST_EMPTY(personal_closets)
 		)
 	new_human.equip_to_slot_or_del(new suitpath, WEAR_JACKET)
 
+/datum/equipment_preset/proc/add_rebel_clf_suit(mob/living/carbon/human/new_human)
+	if(!istype(new_human))
+		return
+	var/suitpath = pick(
+		/obj/item/clothing/suit/marine,
+		/obj/item/clothing/suit/marine/guard,
+		/obj/item/clothing/suit/marine/lamp,
+		/obj/item/clothing/suit/armor/bulletproof,
+		/obj/item/clothing/suit/armor/vest/hybrisa/nspa_vest,
+		/obj/item/clothing/suit/armor/vest/hybrisa/cmb_vest,
+		/obj/item/clothing/suit/storage/militia,
+		/obj/item/clothing/suit/storage/militia/vest,
+		/obj/item/clothing/suit/storage/militia/vest,
+		/obj/item/clothing/suit/storage/militia/partial,
+		)
+	new_human.equip_to_slot_or_del(new suitpath, WEAR_JACKET)
 
 /datum/equipment_preset/proc/add_rebel_ua_helmet(mob/living/carbon/human/new_human)
 	if(!istype(new_human))
@@ -772,6 +802,22 @@ GLOBAL_LIST_EMPTY(personal_closets)
 		)
 	new_human.equip_to_slot_or_del(new helmetpath, WEAR_HEAD)
 
+/datum/equipment_preset/proc/add_rebel_clf_helmet(mob/living/carbon/human/new_human)
+	if(!istype(new_human))
+		return
+	var/helmetpath = pick(
+		/obj/item/clothing/head/durag,
+		/obj/item/clothing/head/skullcap,
+		/obj/item/clothing/head/cmcap/khaki,
+		/obj/item/clothing/head/helmet/marine/veteran/merc,
+		/obj/item/clothing/head/headband/tan,
+		/obj/item/clothing/head/helmet/marine,
+		/obj/item/clothing/head/helmet/upp/marinepilot,
+		/obj/item/clothing/head/militia,
+		/obj/item/clothing/head/militia,
+		/obj/item/clothing/head/militia/bucket,
+		)
+	new_human.equip_to_slot_or_del(new helmetpath, WEAR_HEAD)
 
 /datum/equipment_preset/proc/add_rebel_ua_shoes(mob/living/carbon/human/new_human)
 	if(!istype(new_human))
@@ -972,6 +1018,35 @@ GLOBAL_LIST_INIT(rebel_ua_pistols, list(
 	spawn_weapon(gunpath, ammopath, M, FALSE, ammo_amount)
 
 	return TRUE
+
+/datum/equipment_preset/proc/add_clfreal_rifle(atom/M, ammo_amount = 5)
+	if(!M)
+		return
+
+	var/list/clfreal_rifles = list(
+		/obj/item/weapon/gun/rifle/mar40 = /obj/item/ammo_magazine/rifle/mar40,
+		/obj/item/weapon/gun/rifle/mar40/carbine = /obj/item/ammo_magazine/rifle/mar40,
+		/obj/item/weapon/gun/rifle/m41aMK1 = /obj/item/ammo_magazine/rifle/m41aMK1,
+		/obj/item/weapon/gun/smg/fp9000 = /obj/item/ammo_magazine/smg/fp9000,
+		/obj/item/weapon/gun/rifle/m16 = /obj/item/ammo_magazine/rifle/m16,
+		/obj/item/weapon/gun/rifle/m20a = /obj/item/ammo_magazine/rifle/m20a,
+		/obj/item/weapon/gun/smg/uzi = /obj/item/ammo_magazine/smg/uzi,
+		/obj/item/weapon/gun/smg/mac15 = /obj/item/ammo_magazine/smg/mac15,
+		/obj/item/weapon/gun/boltaction = /obj/item/ammo_magazine/rifle/boltaction,
+		/obj/item/weapon/gun/rifle/l42a/abr40 = /obj/item/ammo_magazine/rifle/l42a/abr40,
+		/obj/item/weapon/gun/smg/mac15/extended = /obj/item/ammo_magazine/smg/mac15/extended,
+		/obj/item/weapon/gun/smg/p90 = /obj/item/ammo_magazine/smg/p90,
+		/obj/item/weapon/gun/rifle/ar10 = /obj/item/ammo_magazine/rifle/ar10,
+		/obj/item/weapon/gun/smg/ppsh = /obj/item/ammo_magazine/smg/ppsh,
+		/obj/item/weapon/gun/smg/mp5 = /obj/item/ammo_magazine/smg/mp5,
+		/obj/item/weapon/gun/smg/mp27 = /obj/item/ammo_magazine/smg/mp27,
+		/obj/item/weapon/gun/rifle/r81m1a/m1c = /obj/item/ammo_magazine/rifle/r81m1,
+	)
+
+	var/gunpath = pick(clfreal_rifles)
+	var/ammopath = clfreal_rifles[gunpath]
+
+	spawn_weapon(gunpath, ammopath, M, 0, ammo_amount)
 
 //*****************************************************************************************************/
 
@@ -1573,6 +1648,16 @@ GLOBAL_LIST_INIT(rebel_ua_pistols, list(
 			new_human.equip_to_slot_or_del(new /obj/item/clothing/mask/rebreather/scarf/tacticalmask/green(new_human), WEAR_FACE)
 		if(5)
 			new_human.equip_to_slot_or_del(new /obj/item/clothing/mask/rebreather/scarf/tacticalmask/black(new_human), WEAR_FACE)
+
+/datum/equipment_preset/proc/add_facewrap_forclf(mob/living/carbon/human/new_human)
+	if(!istype(new_human))
+		return
+	var/random_face_wrap_forclf = rand(1,2)
+	switch(random_face_wrap_forclf)
+		if(1)
+			new_human.equip_to_slot_or_del(new /obj/item/clothing/mask/rebreather/scarf/tacticalmask/tan(new_human), WEAR_FACE)
+		if(2)
+			new_human.equip_to_slot_or_del(new /obj/item/clothing/mask/rebreather/scarf/tacticalmask(new_human), WEAR_FACE)
 
 /datum/equipment_preset/proc/add_neckerchief(mob/living/carbon/human/new_human)
 	if(!istype(new_human))

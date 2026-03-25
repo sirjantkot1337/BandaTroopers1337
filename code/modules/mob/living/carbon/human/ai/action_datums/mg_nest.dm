@@ -78,6 +78,7 @@
 		/datum/equipment_preset/canc/machinegunner::name = /datum/equipment_preset/canc/machinegunner,
 		/datum/equipment_preset/canc_dogwar/militia/lmg::name = /datum/equipment_preset/canc_dogwar/militia/lmg,
 		/datum/equipment_preset/canc_dogwar/soldier/machinegunner::name = /datum/equipment_preset/canc_dogwar/soldier/machinegunner,
+		/datum/equipment_preset/clfreal/soldier/machinegunner::name = /datum/equipment_preset/clfreal/soldier/machinegunner,
 		/datum/equipment_preset/upp/machinegunner::name = /datum/equipment_preset/upp/machinegunner,
 		/datum/equipment_preset/contractor/duty/heavy::name = /datum/equipment_preset/contractor/duty/heavy,
 		/datum/equipment_preset/pmc/gunner::name = /datum/equipment_preset/pmc/gunner,

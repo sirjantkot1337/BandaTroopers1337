@@ -80,6 +80,7 @@
 		/datum/equipment_preset/canc_dogwar/militia/marksman::name = /datum/equipment_preset/canc_dogwar/militia/marksman,
 		/datum/equipment_preset/canc_dogwar/upp/marksman::name = /datum/equipment_preset/canc_dogwar/upp/marksman,
 		/datum/equipment_preset/canc_dogwar/specops/marksman::name = /datum/equipment_preset/canc_dogwar/specops/marksman,
+		/datum/equipment_preset/clfreal/soldier/sniper::name = /datum/equipment_preset/clfreal/soldier/sniper,
 		/datum/equipment_preset/pmc/sniper::name = /datum/equipment_preset/pmc/sniper,
 		/datum/equipment_preset/upp/sniper::name = /datum/equipment_preset/upp/sniper,
 		/datum/equipment_preset/uscm/specialist_equipped/sniper::name = /datum/equipment_preset/uscm/specialist_equipped/sniper,
